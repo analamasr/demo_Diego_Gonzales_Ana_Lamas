@@ -143,6 +143,11 @@ def tensor_to_image(tensor):
 
 
 def load_generator(checkpoint_path, device):
+    checkpoint_path = Path(checkpoint_path)
+
+    if not checkpoint_path.exists():
+        raise FileNotFoundError(f"Model checkpoint not found: {checkpoint_path}")
+
     model = GeneratorUNetResize().to(device)
 
     state_dict = torch.load(checkpoint_path, map_location=device)
@@ -193,19 +198,25 @@ def main():
 
     args = parser.parse_args()
 
+    input_path = Path(args.input)
+    model_path = Path(args.model)
+    output_path = Path(args.output)
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"Input image not found: {input_path}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using device:", device)
 
-    model = load_generator(args.model, device)
+    model = load_generator(model_path, device)
 
-    input_tensor = load_input_image(args.input, paired=args.paired).to(device)
+    input_tensor = load_input_image(input_path, paired=args.paired).to(device)
 
     with torch.no_grad():
         generated_tensor = model(input_tensor)
 
     output_image = tensor_to_image(generated_tensor)
 
-    output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_image.save(output_path)
 
