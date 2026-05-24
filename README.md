@@ -36,12 +36,6 @@ https://nubeusc-my.sharepoint.com/:u:/g/personal/ana_lamas_rodriguez_rai_usc_es/
 
 After downloading it, place the model file in the root folder of this repository, at the same level as `task3_demo.ipynb`.
 
-The expected location is:
-
-```text
-demo_cv2_proyect1/pix2pix_generator.pt
-```
-
 ## Installation
 
 From the root folder of the repository, create and activate a virtual environment:
